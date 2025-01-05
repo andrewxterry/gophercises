@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"encoding/csv"
-	//"time"
+	"time"
 ) 
 
 type Quiz struct  {
@@ -59,7 +59,7 @@ func main() {
 	
 	quizFile := splitCSV(file)
 
-	var score = 0
+/*	var score = 0
 	for i, question := range quizFile {
 		var ans string
 		addend := question.addends 
@@ -73,7 +73,40 @@ func main() {
 			score += 1
 		}
 	}
-	fmt.Printf("Your score was: %d\n", score)
+fmt.Printf("Your score was: %d\n", score)*/	
+	score := 0
+	timerDuration := 29 * time.Second
+	timer := time.NewTimer(timerDuration)
+	fmt.Println("You have 30 seconds to complete the quiz!")
+
+		
+	for i, q := range quizFile {
+		var ans string
+		fmt.Printf("%d: %s = ", i+1, q.addends)
+
+		answerCh := make(chan string)
+
+		go func() {
+			fmt.Scanln(&ans)
+			answerCh <- ans
+		}()
+		select {
+		case <- timer.C:
+		//timer channel
+			fmt.Println("\nTimes up!")
+			fmt.Printf("Your final score is: %d\n", score)
+			return
+		case userAnswer := <- answerCh:
+		// user answer channel
+			if userAnswer == q.sums {
+				fmt.Println("Correct!")
+				score ++
+			} else {
+				fmt.Println("Incorrect")
+			}
+		}
+	}
+	fmt.Printf("\nYou completed this very difficult quiz!\nYour score is: %d\n", score)
 }
 	
 	
