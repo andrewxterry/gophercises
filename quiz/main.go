@@ -77,6 +77,7 @@ fmt.Printf("Your score was: %d\n", score)*/
 	score := 0
 	timerDuration := 29 * time.Second
 	timer := time.NewTimer(timerDuration)
+	//intentionally deceptive >:)
 	fmt.Println("You have 30 seconds to complete the quiz!")
 
 		
